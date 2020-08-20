@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Simon dice</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<header>
+			<h1>Simon dice</h1>
+		</header>
+		<div class="content">
+			<div class="simonplay" id="simonplay">
+				<div class="cuadrado" id="rojo"></div>
+				<div class="cuadrado" id="azul"></div>
+				<div class="cuadrado" id="amarillo"></div>
+
+				<div class="cuadrado" id="verde"></div>
+
+				<div class="circulo" id="comenzar">
+					<button id="start" class="start pointer">Jugar</button>
+				</div>
+			</div>
+		</div>
+		<div class="ranking" id="ranking">
+			<table>
+				<caption>
+					Puntuaciones
+				</caption>
+				<tr>
+					<th>Posicion</th>
+					<th>Jugador</th>
+					<th>Puntuación</th>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>Francisco</td>
+					<td>12</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Melissa</td>
+					<td>14</td>
+				</tr>
+			</table>
+		</div>
+		<div class="player" id="player">
+			<input type="text" placeholder="Nombre jugador" id="name" />
+			<button id="ok">OK</button>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>

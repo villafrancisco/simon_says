@@ -1,0 +1,135 @@
+:root {
+	--bacground-color-top-rigth: rgb(255, 0, 0);
+	--bacground-color-bottom-rigth: rgba(0, 0, 255);
+	--bacground-color-bottom-left: rgba(255, 255, 0);
+	--bacground-color-top-left: rgba(0, 128, 0);
+}
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+header {
+	text-align: center;
+	font-size: 24px;
+}
+
+.ranking {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	border: 2px solid black;
+}
+.ranking table {
+	border-spacing: 30px 10px;
+}
+.content {
+	display: flex;
+	justify-content: center;
+}
+.simonplay {
+	background-color: grey;
+	border-radius: 50%;
+	height: 500px;
+	width: 500px;
+	position: relative;
+	border-style: solid;
+	border-width: 5px;
+}
+.brillorojo {
+	--bacground-color-top-rigth: rgb(255, 120, 120);
+	border-color: var(--bacground-color-top-rigth);
+}
+.brilloazul {
+	--bacground-color-bottom-rigth: rgb(120, 120, 255);
+	border-color: var(--bacground-color-bottom-rigth);
+}
+.brilloamarillo {
+	--bacground-color-bottom-left: rgb(255, 255, 120);
+	border-color: var(--bacground-color-bottom-left);
+}
+.brilloverde {
+	--bacground-color-top-left: rgb(60, 128, 60);
+	border-color: var(--bacground-color-top-left);
+}
+
+.cuadrado,
+.circulo {
+	position: absolute;
+	width: 250px;
+	height: 250px;
+	top: 50%;
+	left: 50%;
+	border-style: solid;
+	border-width: 5px;
+	box-sizing: border-box;
+}
+.circulo {
+	background: grey;
+	border-radius: 50%;
+	margin: -125px 0px 0px -125px;
+	border-width: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	font-size: 30px;
+}
+.circulo .start {
+	font-weight: bold;
+	font-size: 30px;
+	background-color: beige;
+	outline: none;
+	padding: 10px;
+}
+.pointer {
+	cursor: pointer;
+}
+#rojo {
+	background-color: var(--bacground-color-top-rigth);
+	border-top-right-radius: 250px;
+	margin: -250px 0px 0px 0px;
+}
+#azul {
+	background-color: var(--bacground-color-bottom-rigth);
+	border-bottom-right-radius: 250px;
+	margin: 0px 0px -250px 0px;
+}
+#amarillo {
+	position: absolute;
+	background-color: var(--bacground-color-bottom-left);
+	border-bottom-left-radius: 250px;
+	margin: 0px -250px 0px -250px;
+}
+#verde {
+	position: absolute;
+	background-color: var(--bacground-color-top-left);
+	border-top-left-radius: 250px;
+	margin: -250px 0px 0px -250px;
+}
+.player {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(220, 220, 220, 0.8);
+	transform: scale(0);
+	transition: transform 0.3s;
+	overflow: hidden;
+	z-index: 100;
+}
+.player input,
+.player button {
+	padding: 10px;
+	font-weight: bold;
+	border-radius: 5px;
+	font-size: 16px;
+}
+.modal--show {
+	transform: scale(1);
+}
