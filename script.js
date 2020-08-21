@@ -3,50 +3,47 @@ const player = document.getElementById('player');
 const comenzar = document.getElementById('comenzar');
 const name = document.getElementById('name');
 const ok = document.getElementById('ok');
-const rojo = document.getElementById('rojo');
-const azul = document.getElementById('azul');
-const amarillo = document.getElementById('amarillo');
-const verde = document.getElementById('verde');
-const root = document.documentElement;
 const colours = document.getElementById('simonplay');
+const ranking = document.getElementById('ranking');
 
-let nameplayer = '';
 let secuenciacoloresmaquina = [];
-let secuenciacoloresjugador = [];
+let colorjugador;
+let aciertos;
 let nivel = 1;
+const sonidos = ['blue.mp3', 'red.mp3,yellow.mp3,green.mp3'];
 
 const jugador = {
 	nombre: '',
 	puntuacion: ''
 };
-//Como parametro se le pasa la secuencia de colores
-const cambiarBrillo = (colores) => {
-	console.log(colores);
-	for (const color of colores) {
-		console.log(color);
-		let num = 1;
-		let c = setInterval(() => {
-			if (num == 2) {
-			}
-			document.getElementById(color).classList.toggle('brillo' + color);
-			num++;
-		}, 1000);
-	}
-};
 
-const turnoJugador = () => {
-	if (secuenciacoloresmaquina.length != secuenciacoloresjugador.length) {
+//Dibujar los 10 primeros del ranking
+const dibujarRanking = () => {
+	ranking.lastElementChild.innerHTML = '';
+	let jugadores = [];
+
+	for (const key of Object.keys(localStorage)) {
+		jugadores.push(JSON.parse(localStorage.getItem(key)));
+		jugadores.sort((a, b) => b.puntuacion - a.puntuacion);
 	}
 
-	if (JSON.stringify(secuenciacoloresjugador) === JSON.stringify(secuenciacoloresmaquina)) {
-		console.log('mas colores');
-		jugar();
-	} else {
-		// console.log(secuenciacoloresjugador);
-		// console.log(secuenciacoloresmaquina);
-		console.log('has perdido');
+	const fragment = document.createDocumentFragment();
+	for (let i = 0; i < jugadores.length && i < 10; i++) {
+		const tr = document.createElement('TR');
+		const tdposicion = document.createElement('TD');
+		const tdjugador = document.createElement('TD');
+		const tdpuntuacion = document.createElement('TD');
+		tdposicion.textContent = i + 1;
+		tdjugador.textContent = jugadores[i].nombre;
+		tdpuntuacion.textContent = jugadores[i].puntuacion;
+		tr.append(tdposicion);
+		tr.append(tdjugador);
+		tr.append(tdpuntuacion);
+		fragment.append(tr);
 	}
+	ranking.lastElementChild.append(fragment);
 };
+//Establecer un color aleatorio
 const colorAleatorio = () => {
 	let colormaquina;
 	colormaquina = Math.floor(Math.random() * 4) + 1;
@@ -68,33 +65,82 @@ const colorAleatorio = () => {
 	}
 };
 
+//Preguntar si el jugador a acertado la secuencia de colores
+const turnoJugador = () => {
+	if (colorjugador == secuenciacoloresmaquina[aciertos]) {
+		//Has acertado el color
+		aciertos++;
+		if (aciertos == secuenciacoloresmaquina.length) {
+			//has llegado al final acertando todo  la secuencia vuelve a jugar
+			nivel++;
+			jugar();
+		}
+	} else {
+		//No has acertado el color
+		comenzar.textContent = 'GAME OVER';
+		jugador.puntuacion = nivel;
+		const id = Math.random().toString(16).substring(2);
+		localStorage.setItem(id, JSON.stringify(jugador));
+		dibujarRanking();
+	}
+};
+
+//Cambiar brillo de los colores del juego
+const cambiarBrillo = (color) => {
+	return new Promise((resolve, reject) => {
+		document.getElementById(color).classList.toggle('brillo');
+		let a = new Audio('sounds/' + color + '.mp3');
+		a.play();
+		setTimeout(() => {
+			document.getElementById(color).classList.toggle('brillo');
+			setTimeout(() => {
+				resolve();
+			}, 250);
+		}, 1000);
+	});
+};
+
+//Dibujar la secuencia
+const dibujarsecuencia = async () => {
+	for (const color of secuenciacoloresmaquina) {
+		await cambiarBrillo(color);
+	}
+};
+
 const jugar = () => {
-	secuenciacoloresjugador = [];
-	color = colorAleatorio();
-	secuenciacoloresmaquina.push(color);
-	cambiarBrillo(secuenciacoloresmaquina);
+	colorjugador = '';
+	aciertos = 0;
+	secuenciacoloresmaquina.push(colorAleatorio());
+	dibujarsecuencia();
+	comenzar.innerHTML = `<p>${jugador.nombre}</p><p>Nivel:${nivel}</p>`;
 };
 
 const empezarJuego = () => {
 	//secuencia de colores
 	nivel = 1;
-	secuenciacoloresmaquina = ['rojo', 'verde'];
+	secuenciacoloresmaquina = [];
 	jugar();
 };
 
 colours.addEventListener('click', (e) => {
-	const color = colours.getElementsByClassName('cuadrado');
-	for (const element of color) {
-		element.classList.remove('brillorojo');
-		element.classList.remove('brilloazul');
-		element.classList.remove('brilloamarillo');
-		element.classList.remove('brilloverde');
-	}
 	if (e.target.id == 'rojo' || e.target.id == 'azul' || e.target.id == 'amarillo' || e.target.id == 'verde') {
-		secuenciacoloresjugador.push(e.target.id);
-		document.getElementById(e.target.id).classList.toggle('brillo' + e.target.id);
+		colorjugador = e.target.id;
+		turnoJugador();
 	}
 });
+
+colours.addEventListener('mousedown', (e) => {
+	if (e.target.id == 'rojo' || e.target.id == 'azul' || e.target.id == 'amarillo' || e.target.id == 'verde') {
+		document.getElementById(e.target.id).classList.add('brillo');
+	}
+});
+
+colours.addEventListener('mouseup', (e) => {
+	if (e.target.id == 'rojo' || e.target.id == 'azul' || e.target.id == 'amarillo' || e.target.id == 'verde') {
+		document.getElementById(e.target.id).classList.remove('brillo');
+	}
+});
+
 start.addEventListener('click', (e) => {
 	player.classList.add('modal--show');
 });
@@ -106,7 +152,7 @@ ok.addEventListener('click', (e) => {
 		jugador.nombre = name.value;
 		player.classList.remove('modal--show');
 		comenzar.innerHTML = jugador.nombre;
-		localStorage.setItem(jugador.nombre, jugador.puntuacion);
 		empezarJuego();
 	}
 });
+dibujarRanking();
